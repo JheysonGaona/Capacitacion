@@ -3,13 +3,6 @@ using UnityEngine;
 namespace Capacitacion {
 
     public class MouseSelector : MonoBehaviour {
-
-        [Header("Parámetros de la UI")]
-        [Tooltip("Se determina la altura de la caja de información cuando se selecciona un objeto")]
-        [SerializeField] private float alturaCajaInformacion;
-
-        [Tooltip("Se determina la anchura de la caja de información cuando se selecciona un objeto")]
-        [SerializeField] private float anchuraCajaInformacion;
         
         [Header("Parámetros de configuración")]
         [Tooltip("Distancia en metros para poder interactuar con un objeto, se calcula desde el punto actual del personaje")]
@@ -17,18 +10,17 @@ namespace Capacitacion {
 
         [Tooltip("Capa 'Layer' sobre el cual el ray cast no tendra efecto sobre las coliciones")]
         [SerializeField] private LayerMask mascara = -1;
-
+        
+        private bool arrastrandoObjeto;
         public Objeto objeto;
         private Vector3 compensar;
         private Vector3 posicionObjetivo;
-        public Transform seleccionarObjetivo;
         private Camera camaraPrincipal;
-        private bool arrastrandoObjeto;
+        public Transform seleccionarObjetivo;
+        private CajaInformacion cajaInformacion;
 
-        private void OnGUI() {
-            if(objeto != null){
-                GUI.Box(new Rect(Input.mousePosition.x, Input.mousePosition.y, anchuraCajaInformacion, alturaCajaInformacion), "Hola" );
-            }
+        private void Awake(){
+            if(TryGetComponent(out CajaInformacion cajaInformacion)) this.cajaInformacion = cajaInformacion;
         }
 
         // Método de llamada de Unity, se instancia la cámara principal de la escena
@@ -45,11 +37,12 @@ namespace Capacitacion {
             if(camaraPrincipal == null) return;
             // Se llama al método SeleccionarObjetoConClicMouse
             ObtenerClicRaton();
+            if(arrastrandoObjeto) MoverObjetoSeleccionado();
         }
 
         private void LateUpdate(){
             // Se valida si se tiene un objeto seleccionado
-            if(arrastrandoObjeto) MoverObjetoSeleccionado();
+            // if(arrastrandoObjeto) MoverObjetoSeleccionado();
         }
 
         // Método de llamada de Unity, se actualiza en cada Fixed Update del computador, es Fijo 0,02 llamadas por frame
@@ -71,15 +64,31 @@ namespace Capacitacion {
             RaycastHit hit;
             Ray ray = camaraPrincipal.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray.origin, ray.direction, out hit, distanciaInteraccion, mascara, QueryTriggerInteraction.Collide)) {
-                if(objeto == null){
-                    if(hit.collider.TryGetComponent(out Objeto objeto)){
+                if(hit.collider != null){
+                    if(!hit.collider.CompareTag("Objeto")){
+                        if(this.objeto != null && seleccionarObjetivo == null){
+                            BorrarContenidoObjeto();
+                        }
+                        return;
+                    }
+                    if(this.objeto == null && hit.collider.TryGetComponent(out Objeto objeto)){
                         this.objeto = objeto;
+                        if(cajaInformacion != null){
+                            cajaInformacion.CargarInformacion(objeto.Nombre, objeto.Descripcion);
+                        }
                     }
                 }
             }else{
-                if(objeto != null){
-                    this.objeto = null;
+                if(this.objeto != null){
+                    BorrarContenidoObjeto();
                 }
+            }
+        }
+
+        private void BorrarContenidoObjeto(){
+            this.objeto = null;
+            if(cajaInformacion != null){
+                cajaInformacion.BorrarInformacion();
             }
         }
 
@@ -118,7 +127,6 @@ namespace Capacitacion {
                             if(seleccionarObjetivo.TryGetComponent(out Rigidbody rigidbody)){
                                 rigidbody.useGravity = false;
                             }
-                        // Si no es ningún objeto, se establece a null el objetivo a seleccionar
                         }else{
                             seleccionarObjetivo = null;
                         }
@@ -133,6 +141,7 @@ namespace Capacitacion {
                 if(seleccionarObjetivo.TryGetComponent(out Rigidbody rigidbody)){
                     rigidbody.useGravity = true;
                 }
+                seleccionarObjetivo = null;
             }
         }
 
