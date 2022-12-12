@@ -8,8 +8,8 @@ namespace Capacitacion {
         [SerializeField] private Transform puntoConexion;
         [SerializeField] private float anchoLineaInicio = 0.015f;
         [SerializeField] private float anchoLineaDestino = 0.015f;
-        [SerializeField] private Color colorInicio;
-        [SerializeField] private Color colorFinal;
+        [SerializeField] private Color colorInicio = new Color(255, 0, 0, 1);
+        [SerializeField] private Color colorFinal = new Color(255, 255, 255, 0.5f);
 
         private LineRenderer lineRenderer;
         private Transform[] wayPoint;

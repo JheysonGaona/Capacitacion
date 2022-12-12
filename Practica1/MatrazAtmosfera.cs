@@ -8,12 +8,12 @@ namespace Capacitacion {
         
         // Variables del script
         private MatrazOceano matrazOceano;
-        private ParticleSystem efectoGases;
+        private ParticleSystem[] efectoGases;
         private ParticleSystem efectoElectricidad;
         private ParticleSystem efectoGotasAgua;
         private bool activarTemporizador;
         private bool activarReaccion;
-        private bool activarGas;
+        private bool[] activarGas;
         private bool activarElectricidad;
         private float tiempoReaccion;
         private float tiempoReaccionOriginal;
@@ -27,13 +27,16 @@ namespace Capacitacion {
 
         // Método de llamada de Unity, se ejecuta al inicial el aplicativo, se instancia la variable
         private void Start() {
+            activarGas = new bool[efectoGases.Length];
             tiempoReaccionOriginal = tiempoReaccion;
+            recursoSonido.loop = true;
+            recursoSonido.playOnAwake = false;
         }
 
         // Método que permite activar los gases dentro de la matraz
-        public void InterruptorGas(){
-            activarGas = !activarGas;
-            Interruptor(efectoGases, activarGas);
+        public void InterruptorGas(int id){
+            activarGas[id] = !activarGas[id];
+            Interruptor(efectoGases[id], activarGas[id]);
         }
 
         // Método que permite activar el circuito eléctrico dentro de la matraz, además, activa el sonido de electricidad
@@ -59,7 +62,14 @@ namespace Capacitacion {
 
         // Método que permite verificar si la reacción entre vapor, gases y electricidad se encuentra habilitada
         private void ValidarReaccion(){
-            bool estadoReaccion = matrazOceano.ValidarReaccion(activarGas, activarElectricidad);
+            bool combinacionGases = true;
+            foreach(bool estadoActual in activarGas){
+                if(!estadoActual){
+                    combinacionGases = false;
+                    break;
+                }
+            }
+            bool estadoReaccion = matrazOceano.ValidarReaccion(combinacionGases, activarElectricidad);
             if(estadoReaccion){
                 // Caen gotas de agua e inicia el temporizador
                 if(activarReaccion){
@@ -104,7 +114,7 @@ namespace Capacitacion {
 
         // Getters & Setters de la clase
         public float TiempoReaccion { set => tiempoReaccion = value; get => tiempoReaccion; }
-        public ParticleSystem EfectoGases { set => efectoGases = value; }
+        public ParticleSystem[] EfectoGases { set => efectoGases = value; }
         public ParticleSystem EfectoElectricidad { set => efectoElectricidad = value; }
         public ParticleSystem EfectoGotasAgua { set => efectoGotasAgua = value; }
         public AudioSource RecursoSonido { get => recursoSonido; }

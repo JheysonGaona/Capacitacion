@@ -6,6 +6,7 @@ namespace Capacitacion {
         //Variables de la clase
         [Tooltip("Se debe incluir el efecto de particulas correspondiente al objeto, para este caso fuego")]
         [SerializeField] private ParticleSystem efectoFuego;
+        [SerializeField] private GameObject efectoLuzFuego;
         [SerializeField] public Vector3 limiteSuperior;
 
         private BoxCollider disparadorCajaColision;
@@ -26,6 +27,7 @@ namespace Capacitacion {
             efectoFuego.gameObject.name = "EfectoFuego";
             limiteInferior = disparadorCajaColision.center;
             disparadorCajaColision.isTrigger = true;
+            efectoLuzFuego.SetActive(false);
         }
 
         // Método que permite activar la funcionalidad del objeto
@@ -34,6 +36,7 @@ namespace Capacitacion {
             if(estaEncendido){
                 ActivarSonido();
                 efectoFuego.Play();
+                efectoLuzFuego.SetActive(true);
                 disparadorCajaColision.center = Vector3.MoveTowards(disparadorCajaColision.center, limiteSuperior, 1f);
             }else{
                 DesactivarFuncionalidad();
@@ -52,6 +55,7 @@ namespace Capacitacion {
         private void DesactivarFuncionalidad(){
             DesactivarSonido();
             efectoFuego.Stop();
+            efectoLuzFuego.SetActive(false);
             disparadorCajaColision.center = Vector3.MoveTowards(disparadorCajaColision.center, limiteInferior, 1f);
         }
     }

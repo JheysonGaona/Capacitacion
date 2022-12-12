@@ -12,8 +12,8 @@ namespace Capacitacion {
 
         private float tiempoPorFrame = 0f;
         private float tiempoPorSegundo = 0f;
-        private float lineaDeTiempo = 1;
-        private bool iniciar = false;
+        public float lineaDeTiempo = 1;
+        public bool iniciar = false;
 
         private void Awake() {
             if(textoTemporizador != null){
@@ -27,12 +27,12 @@ namespace Capacitacion {
 
         // Método de llama de Unity, permite activar los recursos del script cuando la cámara renderiza el objeto
         private void OnBecameVisible() {
-            enabled = true;
+            // enabled = true;
         }
 
         // Método de llama de Unity, permite desactivar los recursos del script cuando la cámara no renderiza el objeto
         private void OnBecameInvisible() {
-            enabled = false;
+            // enabled = false;
         }
 
         // Método de llamada de Unity, se inicia el temporizador

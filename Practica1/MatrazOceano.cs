@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Capacitacion {
@@ -31,6 +32,8 @@ namespace Capacitacion {
         private void Start() {
             tiempoColorAguaOriginal = tiempoColorAgua;
             tiempoEvaporacionOriginal = tiempoEvaporacion;
+            recursoSonido.loop = true;
+            recursoSonido.playOnAwake = false;
             enabled = false;
         }
 

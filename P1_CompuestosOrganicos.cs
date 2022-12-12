@@ -23,7 +23,7 @@ namespace Capacitacion {
         [SerializeField] private ParticleSystem efectoVaporAgua;
 
         [Tooltip("Se debe incluir el efecto de particulas correspondiente al objeto, para este caso gases")]
-        [SerializeField] private ParticleSystem efectoGases;
+        [SerializeField] private ParticleSystem[] efectoGases;
 
         [Tooltip("Se debe incluir el efecto de particulas correspondiente al objeto, para este caso electricidad")]
         [SerializeField] private ParticleSystem efectoElectricidad;
@@ -39,19 +39,21 @@ namespace Capacitacion {
         [Tooltip("Se debe incluir el efecto de sonido para el activador de electricdad")]
         [SerializeField] private AudioClip efectoSonidoElectricidad;
 
+        [Header("Panel Etiquetas")]
+        [Tooltip("Se debe incluir el panel de etiquetas para activar o desactivar")]
+        [SerializeField] private GameObject pnlEtiquetas;
+
+        private bool estadoPnlEtiquetas = true;
+
         // Método de llamada de Unity, se inicializan los componentes de las matraces
         private void Awake(){
             ConfiguracionMatrazOceano();
             ConfiguracionMatrazAtmosfera();
         }
 
-        private void Start(){
-            matrazOceano.RecursoSonido.clip = efectoSonidoAguaHirviendo;
-            matrazAtmosfera.RecursoSonido.clip = efectoSonidoElectricidad;
-        }
-
         // Método que permite configurar la matraz oceano
         private void ConfiguracionMatrazOceano(){
+            matrazOceano.RecursoSonido.clip = efectoSonidoAguaHirviendo;
             matrazOceano.TiempoColorAgua = tiempoCambioColorAgua;
             matrazOceano.TiempoEvaporacion = tiempoEvaporacionAgua;
             matrazOceano.EfectoVaporAgua = efectoVaporAgua;
@@ -59,11 +61,17 @@ namespace Capacitacion {
 
         // Método que permite configurar la matraz atmosfera
         private void ConfiguracionMatrazAtmosfera(){
+            matrazAtmosfera.RecursoSonido.clip = efectoSonidoElectricidad;
             matrazAtmosfera.TiempoReaccion = tiempoReaccionQuimicaGases;
             matrazAtmosfera.EfectoGases = efectoGases;
             matrazAtmosfera.EfectoElectricidad = efectoElectricidad;
             matrazAtmosfera.EfectoGotasAgua = efectoGotasAgua;
             matrazAtmosfera.MatrazOceano = matrazOceano;
+        }
+
+        public void ActivarEtiquetas(){
+            estadoPnlEtiquetas = !estadoPnlEtiquetas;
+            pnlEtiquetas.SetActive(estadoPnlEtiquetas);
         }
 
         // Método que permite reiniciar la práctica
