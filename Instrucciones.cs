@@ -16,7 +16,7 @@ namespace Capacitacion {
 
         private int limite = 0;
         private int contador = 0;
-        public bool estadoPanelInstrucciones = false;
+        private bool estadoPanelInstrucciones = false;
 
         // Método de llamada de Unity, se instancian los botones
         private void Start(){
@@ -48,11 +48,17 @@ namespace Capacitacion {
             imgInstrucciones.sprite = imagenesIntruccion[contador];
         }
 
-        public void MostrarInstrucciones(){
+        private void MostrarInstrucciones(){
             estadoPanelInstrucciones = !estadoPanelInstrucciones;
             panelInstrucciones.SetActive(estadoPanelInstrucciones);
             contador = 0;
             EstablecerContenidoInstruccion();
+        }
+
+        public void EstablecerInstruciones(Sprite[] imagenesIntruccion){
+            this.imagenesIntruccion = imagenesIntruccion;
+            this.limite = imagenesIntruccion.Length - 1;
+            MostrarInstrucciones();
         }
     }
 }

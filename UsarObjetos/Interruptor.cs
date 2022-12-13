@@ -34,7 +34,7 @@ namespace Capacitacion {
             evento.Invoke();
             activarBoton = !activarBoton;
             materialBase.color = activarBoton ? colorEncendido: colorApagado;
-            recursoAudio.Play();
+            ActivarSonido();
         }
 
         // Método que permite resetear los parametros del mechero

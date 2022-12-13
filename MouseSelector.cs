@@ -12,11 +12,11 @@ namespace Capacitacion {
         [SerializeField] private LayerMask mascara = -1;
         
         private bool arrastrandoObjeto;
-        public Objeto objeto;
+        private Objeto objeto;
         private Vector3 compensar;
         private Vector3 posicionObjetivo;
         private Camera camaraPrincipal;
-        public Transform seleccionarObjetivo;
+        private Transform seleccionarObjetivo;
         private CajaInformacion cajaInformacion;
 
         private void Awake(){
