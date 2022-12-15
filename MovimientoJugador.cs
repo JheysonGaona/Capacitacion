@@ -100,6 +100,7 @@ namespace Capacitacion {
         }
     #endif
 
+        // Método que permite validar si el personaje se encuentra tocando el piso
         private void ValidarSuelo(){
             RaycastHit hit;
             bool raycast = Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hit, comprobarDistanciaSuelo, mascara, QueryTriggerInteraction.Ignore);
@@ -110,12 +111,14 @@ namespace Capacitacion {
             }
         }
 
+        // Método que permite capturar las entradas de teclado, es decir, si el usuario preesiona cierta tecla
         private void CapturarEntradaTeclado(){
             vertical = Input.GetAxis("Vertical");       // Entrada de teclas W, S y flechas arriba y abajo
             horizontal = Input.GetAxis("Horizontal");   // Entrada de teclas A, D y flechas derecha e izquierda
             saltar = Input.GetButtonDown("Jump");       // Entrada de tecla space
         }
 
+        // Método que permite realizar acciones mientras el personaje este en el piso
         private void ControlarMovimientoSuelo(){
             if(saltar){
                 velocidadCaida = fuerzaSalto;
@@ -125,11 +128,13 @@ namespace Capacitacion {
             }
         }
 
+        // Método que permite realizar acciones mientras el personaje este en el aire
         private void ControlarMovimientoAire(){
             velocidadCaida += (gravedad * multiplicadorGravedad) * Time.deltaTime;
             comprobarDistanciaSuelo = controladorPersonaje.velocity.y < 0 ? comprobarDistanciaSueloValorInicial: 0.01f;
         }
 
+        // Método que permite calcular el movimiento del personaje en función a su velocidad y hacia donde se este moviendo
         private void CalcularMovimiento(){
             // direccionMovimiento = transform.forward * vertical + transform.right * horizontal;
             direccionMovimiento = transform.forward * vertical;
@@ -142,10 +147,12 @@ namespace Capacitacion {
             direccionMovimiento.y = velocidadCaida;
         }
 
+        // Método que permite controlar el movimiento del personaje, mueve el character controller
         private void ControlarMovimiento(){  
             controladorPersonaje.Move(direccionMovimiento * Time.deltaTime);
         }
 
+        // Método que se utiliza para activar las animaciones del personaje, en función a sus acciones
         private void ControlarAnimaciones(){
             anim.SetFloat("vertical", vertical);
             anim.SetFloat("horizontal", horizontal);

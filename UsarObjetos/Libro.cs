@@ -21,13 +21,8 @@ namespace Capacitacion {
 
         // Método abtracto implementado que permite activar la funcionalidad del objeto
         public override void ActivarFuncionalidad() {
-            ActivarSonido();
+            base.ActivarFuncionalidad();
             instrucciones.EstablecerInstruciones(imagenesIntruccion);
-        }
-
-        // Método que permite resetear los parametros del mechero
-        public override void ResetearFuncionalidad(){
-            ActivarFuncionalidad();
         }
     }
 }

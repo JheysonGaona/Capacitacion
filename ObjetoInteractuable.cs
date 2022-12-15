@@ -12,6 +12,16 @@ namespace Capacitacion {
 
         private Rigidbody componenteFisica;
 
+        public override void ActivarFuncionalidad()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void ResetearFuncionalidad()
+        {
+            throw new System.NotImplementedException();
+        }
+
         // Método de llamada de Unity, se ejecuta una sola vez al iniciar el aplicativo
         // Se instancian los componentes
         protected virtual void Awake(){

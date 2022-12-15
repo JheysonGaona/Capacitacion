@@ -27,10 +27,8 @@ namespace Capacitacion {
         public string Nombre { set => nombre = value; get => nombre; }
         public string Descripcion { set => descripcion = value; get => descripcion; }
 
-        /*
-        // Métodos abstractos, de uso oblgatorio para demás clases que hereden de esta
-        public abstract void OnMouseEnter();
-        public abstract void OnMouseExit();
-        */
+        // Método abstracto, de uso oblgatorio para demás clases que hereden de esta
+        public abstract void ActivarFuncionalidad();
+        public abstract void ResetearFuncionalidad();
     }
 }

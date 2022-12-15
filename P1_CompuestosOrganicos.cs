@@ -69,6 +69,7 @@ namespace Capacitacion {
             matrazAtmosfera.MatrazOceano = matrazOceano;
         }
 
+        // Método que permite activar/desactivar el panel de etiquetas de la práctica
         public void ActivarEtiquetas(){
             estadoPnlEtiquetas = !estadoPnlEtiquetas;
             pnlEtiquetas.SetActive(estadoPnlEtiquetas);

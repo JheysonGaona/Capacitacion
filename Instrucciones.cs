@@ -48,6 +48,7 @@ namespace Capacitacion {
             imgInstrucciones.sprite = imagenesIntruccion[contador];
         }
 
+        // Método que permite mostrar pro primera las instrucciones, dependiendo del tamaño y contenido
         private void MostrarInstrucciones(){
             estadoPanelInstrucciones = !estadoPanelInstrucciones;
             panelInstrucciones.SetActive(estadoPanelInstrucciones);
@@ -55,6 +56,7 @@ namespace Capacitacion {
             EstablecerContenidoInstruccion();
         }
 
+        // Método que permite asignar nuevas instrucciones por medio de libros etc, se reutiliza la UI de información
         public void EstablecerInstruciones(Sprite[] imagenesIntruccion){
             this.imagenesIntruccion = imagenesIntruccion;
             this.limite = imagenesIntruccion.Length - 1;

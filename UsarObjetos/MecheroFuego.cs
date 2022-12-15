@@ -6,7 +6,11 @@ namespace Capacitacion {
         //Variables de la clase
         [Tooltip("Se debe incluir el efecto de particulas correspondiente al objeto, para este caso fuego")]
         [SerializeField] private ParticleSystem efectoFuego;
+
+        [Tooltip("Se debe incluir el efecto de luz correspondiente al objeto")]
         [SerializeField] private GameObject efectoLuzFuego;
+
+        [Tooltip("Se determina, a que altura sube la caja de colision del fuego, para saber que objetos puede activar")]
         [SerializeField] public Vector3 limiteSuperior;
 
         private BoxCollider disparadorCajaColision;
@@ -34,7 +38,7 @@ namespace Capacitacion {
         public override void ActivarFuncionalidad(){
             estaEncendido = !estaEncendido;
             if(estaEncendido){
-                ActivarSonido();
+                base.ActivarFuncionalidad();
                 efectoFuego.Play();
                 efectoLuzFuego.SetActive(true);
                 disparadorCajaColision.center = Vector3.MoveTowards(disparadorCajaColision.center, limiteSuperior, 1f);
@@ -53,7 +57,7 @@ namespace Capacitacion {
 
         // Método que permite descativar los recursos del mechero
         private void DesactivarFuncionalidad(){
-            DesactivarSonido();
+            base.ResetearFuncionalidad();
             efectoFuego.Stop();
             efectoLuzFuego.SetActive(false);
             disparadorCajaColision.center = Vector3.MoveTowards(disparadorCajaColision.center, limiteInferior, 1f);

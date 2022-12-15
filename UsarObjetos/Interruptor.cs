@@ -6,8 +6,13 @@ namespace Capacitacion {
     public class Interruptor : ObjetoDinamico {
         
         // Variables de la clase
-        [SerializeField] private Color colorApagado;
-        [SerializeField] private Color colorEncendido;
+        [Tooltip("Color del interruptor o botón al momento de estar apagado")]
+        [SerializeField] private Color colorApagado = new Color(255, 0, 0, 1.0f);
+
+        [Tooltip("Color del interruptor o botón al momento de estar encendido")]
+        [SerializeField] private Color colorEncendido = new Color(57, 255, 20, 1.0f);
+
+        [Tooltip("Evento a llamar una vez que el interruptor se use")]
         public UnityEvent evento;
 
         private bool activarBoton = false;
@@ -31,10 +36,10 @@ namespace Capacitacion {
 
         // Método abtracto implementado que permite activar la funcionalidad del objeto
         public override void ActivarFuncionalidad() {
+            base.ActivarFuncionalidad();
             evento.Invoke();
             activarBoton = !activarBoton;
             materialBase.color = activarBoton ? colorEncendido: colorApagado;
-            ActivarSonido();
         }
 
         // Método que permite resetear los parametros del mechero

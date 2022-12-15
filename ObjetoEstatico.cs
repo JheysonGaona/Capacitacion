@@ -17,15 +17,5 @@ namespace Capacitacion {
         new virtual protected void Start(){
             base.Start();
         }
-
-        public abstract void ActivarFuncionalidad();
-
-        /*
-        public override void OnMouseEnter() {
-        }
-
-        public override void OnMouseExit() {
-        }
-        */
     }
 }
