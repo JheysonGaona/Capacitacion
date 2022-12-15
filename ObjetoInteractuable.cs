@@ -6,21 +6,14 @@ namespace Capacitacion {
 
     public class ObjetoInteractuable : Objeto {
 
-        [SerializeField] private float alturaInteracción;
-        [SerializeField] [Range(0, 360)] private float anguloRotación;
-        [SerializeField] private bool puedeRotar;
+        [SerializeField] [Range(0.5f, 4.0f)] private float alturaAlzarceObjeto = 1.25f;
+        [SerializeField] private Vector3 anguloRotación;
+        [SerializeField] private bool activarFisicas = false;
+        [SerializeField] private bool puedeRotar = false;
 
         private Rigidbody componenteFisica;
-
-        public override void ActivarFuncionalidad()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void ResetearFuncionalidad()
-        {
-            throw new System.NotImplementedException();
-        }
+        private Vector3 anguloRotacionInicial;
+        private bool elObjetoRoto = false;
 
         // Método de llamada de Unity, se ejecuta una sola vez al iniciar el aplicativo
         // Se instancian los componentes
@@ -33,12 +26,56 @@ namespace Capacitacion {
         new protected virtual void Start() {
             base.Start();
             ConfigurarRecursoFisica();
+            anguloRotacionInicial = this.transform.rotation.eulerAngles;
         }
 
         // Método que permite configurar el componente de fisicas
         private void ConfigurarRecursoFisica(){
             componenteFisica.useGravity = true;
             componenteFisica.isKinematic = false;
+            EstablecerRecursoFisicaRealismo();
         }
+
+        public Objeto SeleccionarObjeto(){
+            componenteFisica.useGravity = false;
+            this.transform.rotation = Quaternion.Euler(anguloRotacionInicial);
+            CongelarRotacionObjeto();
+            return this;
+        }
+
+        public override void ActivarFuncionalidad() {
+            if(puedeRotar){
+                elObjetoRoto = !elObjetoRoto;
+                if(elObjetoRoto){
+                    this.transform.rotation = Quaternion.Euler(anguloRotación);
+                }else{
+                    this.transform.rotation = Quaternion.Euler(anguloRotacionInicial);
+                }
+            }
+        }
+
+        public override void ResetearFuncionalidad(){
+            elObjetoRoto = false;
+            componenteFisica.useGravity = true;
+            componenteFisica.velocity = new Vector3(0, 0, 0);
+            // this.transform.rotation = Quaternion.Euler(anguloRotacionInicial);
+            EstablecerRecursoFisicaRealismo();
+        }
+
+        private void EstablecerRecursoFisicaRealismo(){
+            if( activarFisicas ){
+                componenteFisica.constraints =  RigidbodyConstraints.None;
+            }else{
+                CongelarRotacionObjeto();
+            }
+        }
+
+        private void CongelarRotacionObjeto(){
+            componenteFisica.constraints =  RigidbodyConstraints.FreezeRotationX |
+                                            RigidbodyConstraints.FreezeRotationY |
+                                            RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        public float AlturaAlzarceObjeto { set => alturaAlzarceObjeto = value; get => alturaAlzarceObjeto; }
     }
 }

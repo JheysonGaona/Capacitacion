@@ -6,15 +6,11 @@ namespace Capacitacion {
 
     public abstract class ObjetoEstatico : Objeto {
 
-        [SerializeField] private bool estadoObjeto;
+        protected virtual void Awake(){
 
-        private Animator animObjeto;
-
-        private void Awake(){
-            animObjeto = GetComponent<Animator>();
         }
 
-        new virtual protected void Start(){
+        new protected virtual void Start(){
             base.Start();
         }
     }

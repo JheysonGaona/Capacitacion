@@ -15,7 +15,8 @@ namespace Capacitacion {
         [SerializeField] private LayerMask mascara = -1;
         
         private bool arrastrandoObjeto;
-        private Objeto objeto;
+        private float alturaArratreObjeto;
+        public Objeto objeto;
         private Vector3 compensar;
         private Vector3 posicionObjetivo;
         private Camera camaraPrincipal;
@@ -50,7 +51,7 @@ namespace Capacitacion {
 
         // Método de llamada de Unity, se actualiza en cada Fixed Update del computador, es Fijo 0,02 llamadas por frame
         private void FixedUpdate(){
-            SelectorDeObjetos();
+            if(!arrastrandoObjeto) SelectorDeObjetos();
         }
 
     #if UNITY_EDITOR
@@ -110,7 +111,7 @@ namespace Capacitacion {
                         }
 
                         // Si es un objeto dinámico, se procede a activar su funcionalidad
-                        if(hit.collider.gameObject.TryGetComponent(out ObjetoDinamico objetoDinamico)){
+                        if(hit.collider.gameObject.TryGetComponent(out Objeto objetoDinamico)){
                             objetoDinamico.ActivarFuncionalidad();
                             return;
                         }
@@ -125,11 +126,9 @@ namespace Capacitacion {
                             // Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out hit);
                             seleccionarObjetivo = hit.collider.transform;
                             arrastrandoObjeto = true;
+                            objeto = objetoInteractuable.SeleccionarObjeto();
+                            alturaArratreObjeto = objetoInteractuable.AlturaAlzarceObjeto;
                             Cursor.visible = false;
-                            // Si el objeto cuenta con propiedades de Físicas, se desabilita la gravedad
-                            if(seleccionarObjetivo.TryGetComponent(out Rigidbody rigidbody)){
-                                rigidbody.useGravity = false;
-                            }
                         }else{
                             seleccionarObjetivo = null;
                         }
@@ -141,9 +140,8 @@ namespace Capacitacion {
             if(Input.GetMouseButtonUp(0) && arrastrandoObjeto){
                 arrastrandoObjeto = false;
                 Cursor.visible = true;
-                if(seleccionarObjetivo.TryGetComponent(out Rigidbody rigidbody)){
-                    rigidbody.useGravity = true;
-                }
+                objeto.ResetearFuncionalidad();
+                objeto = null;
                 seleccionarObjetivo = null;
             }
         }
@@ -153,7 +151,10 @@ namespace Capacitacion {
             if(seleccionarObjetivo != null){
                 Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, camaraPrincipal.WorldToScreenPoint(seleccionarObjetivo.position).z);
                 Vector3 worldPosition = camaraPrincipal.ScreenToWorldPoint(position);
-                seleccionarObjetivo.position = new Vector3(worldPosition.x, 1.25f, worldPosition.z);
+                seleccionarObjetivo.position = new Vector3(worldPosition.x, alturaArratreObjeto, worldPosition.z);
+                if(Input.GetMouseButtonDown(1)){
+                    objeto.ActivarFuncionalidad();
+                }
             }
         }
     }
