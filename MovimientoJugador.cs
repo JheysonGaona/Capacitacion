@@ -54,6 +54,7 @@ namespace Capacitacion {
 
         // Método de llamada de Unity, se establecen los componentes del personaje
         private void Awake(){
+            this.gameObject.tag = "Player";
             anim = GetComponent<Animator>();
             controladorPersonaje = GetComponent<CharacterController>();
         }
@@ -61,6 +62,7 @@ namespace Capacitacion {
         // Método de llama de Unity, se instancia el valor de la variable
         private void Start(){
             anim.SetBool("canMove", true);
+            anim.applyRootMotion = false;
             comprobarDistanciaSueloValorInicial = comprobarDistanciaSuelo;
         }
 

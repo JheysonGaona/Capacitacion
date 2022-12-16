@@ -7,10 +7,10 @@ namespace Capacitacion {
         
         // Variables de la clase
         [Tooltip("Color del interruptor o botón al momento de estar apagado")]
-        [SerializeField] private Color colorApagado = new Color(255, 0, 0, 1.0f);
+        [SerializeField] private Color colorApagado = new Color(255, 0, 0);
 
         [Tooltip("Color del interruptor o botón al momento de estar encendido")]
-        [SerializeField] private Color colorEncendido = new Color(57, 255, 20, 1.0f);
+        [SerializeField] private Color colorEncendido = new Color(57, 255, 20);
 
         [Tooltip("Evento a llamar una vez que el interruptor se use")]
         public UnityEvent evento;

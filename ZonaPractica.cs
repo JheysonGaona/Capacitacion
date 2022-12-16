@@ -11,7 +11,7 @@ namespace Capacitacion {
         [SerializeField] private GameObject camaraZonaInteraccion;
         [SerializeField] private GameObject canvasPractica1;
 
-        private Animator animatorJugador;
+        public Animator animatorJugador;
         private GameObject camaraPersonaje;
         private SphereCollider zonaColision;
 

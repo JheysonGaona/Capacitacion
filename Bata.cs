@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Capacitacion {
 
-    public class Bata : ObjetoEstatico {
+    public class Bata : ObjetoDinamico {
 
         [SerializeField] private SkinnedMeshRenderer skinnedMeshRendererPersonaje;
         [SerializeField] private Mesh atuendoPersonaje;
@@ -17,10 +17,10 @@ namespace Capacitacion {
 
         private bool estadoAtuendo = false;
         private MeshFilter meshBata;
-
         private Renderer renderBata;
 
         new protected virtual void Awake(){
+            base.Awake();
             meshBata = GetComponent<MeshFilter>();
             renderBata = GetComponent<Renderer>();
         }
@@ -33,6 +33,7 @@ namespace Capacitacion {
 
         public override void ActivarFuncionalidad() {
             estadoAtuendo = !estadoAtuendo;
+            base.ActivarFuncionalidad();
             if(estadoAtuendo){
                 skinnedMeshRendererPersonaje.sharedMesh = atuendoBata;
                 skinnedMeshRendererPersonaje.gameObject.GetComponent<Renderer>().material = materialAtuendoBata;
@@ -46,10 +47,6 @@ namespace Capacitacion {
 
             }
             if(manosPersonaje != null) manosPersonaje.SetActive(!estadoAtuendo);
-        }
-
-        public override void ResetearFuncionalidad() {
-
         }
     }
 }

@@ -15,8 +15,9 @@ namespace Capacitacion {
         [SerializeField] private LayerMask mascara = -1;
         
         private bool arrastrandoObjeto;
+        // => private bool cursorSobreUI;
         private float alturaArratreObjeto;
-        public Objeto objeto;
+        private Objeto objeto;
         private Vector3 compensar;
         private Vector3 posicionObjetivo;
         private Camera camaraPrincipal;
@@ -40,6 +41,8 @@ namespace Capacitacion {
             // Se valida si existe una cámara principal en el juego
             if(camaraPrincipal == null) return;
             // Se llama al método SeleccionarObjetoConClicMouse
+            // => cursorSobreUI = EventSystem.current.IsPointerOverGameObject();
+            // => if(!cursorSobreUI)
             ObtenerClicRaton();
             if(arrastrandoObjeto) MoverObjetoSeleccionado();
         }
@@ -51,7 +54,7 @@ namespace Capacitacion {
 
         // Método de llamada de Unity, se actualiza en cada Fixed Update del computador, es Fijo 0,02 llamadas por frame
         private void FixedUpdate(){
-            if(!arrastrandoObjeto) SelectorDeObjetos();
+            if(!arrastrandoObjeto /**&& !cursorSobreUI **/) SelectorDeObjetos();
         }
 
     #if UNITY_EDITOR
@@ -111,8 +114,20 @@ namespace Capacitacion {
                         }
 
                         // Si es un objeto dinámico, se procede a activar su funcionalidad
-                        if(hit.collider.gameObject.TryGetComponent(out Objeto objetoDinamico)){
+                        if(hit.collider.gameObject.TryGetComponent(out ObjetoDinamico objetoDinamico)){
                             objetoDinamico.ActivarFuncionalidad();
+                            return;
+                        }
+
+                        // Si es un objeto dinámico, se procede a activar su funcionalidad
+                        if(hit.collider.gameObject.TryGetComponent(out ObjetoInterpolable objetoInterpolable)){
+                            objetoInterpolable.ActivarFuncionalidad();
+                            return;
+                        }
+
+                        // Si es un objeto dinámico, se procede a activar su funcionalidad
+                        if(hit.collider.gameObject.TryGetComponent(out ObjetoRotatorio objetoRotatorio)){
+                            objetoRotatorio.ActivarFuncionalidad();
                             return;
                         }
 
