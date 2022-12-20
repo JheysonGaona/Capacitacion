@@ -14,12 +14,22 @@ namespace Capacitacion {
 
         [Tooltip("Descripcción del objeto, se detalla la información relevante o para que sirve el objeto")]
         [SerializeField] private string descripcion;
+
+        // Enumeración para definir el tipo de objeto
+        public enum tipoObjeto { Estatico, Movible }
+        protected tipoObjeto caracteristicaObjeto;
         
         // Método de llamada de Unity, se ejecuta al inicial el aplicativo
         // Se asigna el tag y los layers del objeto, por si el usuario se olvida manualmente
         protected virtual void Start(){
             this.gameObject.tag = "Objeto";
             this.gameObject.layer = 8;
+            EstablecerTipoObjeto();
+        }
+
+        // Método que permite devolver el tipo de objeto, es decir, puede o no ser movido
+        public bool ObtenerTipoObjeto(){
+            return this.caracteristicaObjeto == tipoObjeto.Movible ? true: false;
         }
 
         // Getters & Setters de la clase
@@ -30,5 +40,6 @@ namespace Capacitacion {
         // Método abstracto, de uso oblgatorio para demás clases que hereden de esta
         public abstract void ActivarFuncionalidad();
         public abstract void ResetearFuncionalidad();
+        public abstract void EstablecerTipoObjeto();
     }
 }

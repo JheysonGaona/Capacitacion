@@ -67,6 +67,10 @@ namespace Capacitacion {
 
         }
 
+        public override void EstablecerTipoObjeto() {
+            this.caracteristicaObjeto = tipoObjeto.Estatico;
+        }
+
         private void OnBecameInvisible() {
             enabled = false;
         }

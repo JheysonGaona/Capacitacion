@@ -43,5 +43,9 @@ namespace Capacitacion {
         public override void ResetearFuncionalidad(){
             recursoAudio.Stop();
         }
+
+        public override void EstablecerTipoObjeto() {
+            this.caracteristicaObjeto = tipoObjeto.Estatico;
+        }
     }
 }

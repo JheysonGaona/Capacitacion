@@ -37,7 +37,7 @@ namespace Capacitacion {
 
         // Método asbtracto que se hereda, para activar la funcionalidad de este objeto
         public override void ActivarFuncionalidad() {
-            bool estadoColocarMuestra = microscopio.ColocarMuestra(this);
+            bool estadoColocarMuestra = microscopio.ColocarPortaobjetos(this);
             if(estadoColocarMuestra){
                 base.ActivarFuncionalidad();
             }

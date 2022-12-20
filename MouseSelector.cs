@@ -7,6 +7,7 @@ namespace Capacitacion {
 
     public class MouseSelector : MonoBehaviour {
         
+        // Variables de la clase
         [Header("Parámetros de configuración")]
         [Tooltip("Distancia en metros para poder interactuar con un objeto, se calcula desde el punto actual del personaje")]
         [SerializeField] private float distanciaInteraccion = 5.0f;
@@ -15,8 +16,7 @@ namespace Capacitacion {
         [SerializeField] private LayerMask mascara = -1;
         
         private bool arrastrandoObjeto;
-        // => private bool cursorSobreUI;
-        private float alturaArratreObjeto;
+        private float alturaArrastrarObjeto;
         private Objeto objeto;
         private Vector3 compensar;
         private Vector3 posicionObjetivo;
@@ -24,6 +24,9 @@ namespace Capacitacion {
         private Transform seleccionarObjetivo;
         private CajaInformacion cajaInformacion;
 
+        // => private bool cursorSobreUI;
+
+        // Método de llamada de unity, se llama una vez por escena, se instancia la caja de información
         private void Awake(){
             if(TryGetComponent(out CajaInformacion cajaInformacion)) this.cajaInformacion = cajaInformacion;
         }
@@ -32,7 +35,7 @@ namespace Capacitacion {
         private void Start() {
             camaraPrincipal = Camera.main;
             arrastrandoObjeto = false;
-            if(camaraPrincipal == null) Debug.LogWarning ("Advertencia, no se ha encontrado" + 
+            if(camaraPrincipal == null) Debug.LogWarning ("Advertencia, no se ha encontrado " + 
                                         "una cámara principal dentro de la escena del juego");
         }
 
@@ -45,11 +48,6 @@ namespace Capacitacion {
             // => if(!cursorSobreUI)
             ObtenerClicRaton();
             if(arrastrandoObjeto) MoverObjetoSeleccionado();
-        }
-
-        private void LateUpdate(){
-            // Se valida si se tiene un objeto seleccionado
-            // if(arrastrandoObjeto) MoverObjetoSeleccionado();
         }
 
         // Método de llamada de Unity, se actualiza en cada Fixed Update del computador, es Fijo 0,02 llamadas por frame
@@ -92,13 +90,6 @@ namespace Capacitacion {
             }
         }
 
-        private void BorrarContenidoObjeto(){
-            this.objeto = null;
-            if(cajaInformacion != null){
-                cajaInformacion.BorrarInformacion();
-            }
-        }
-
         // Método que permite seleccionar o activar un objeto interactuable dentro de la escena
         private void ObtenerClicRaton(){
             // Se valida si el usuario presiona clic izquierdo
@@ -113,39 +104,15 @@ namespace Capacitacion {
                             return;
                         }
 
-                        // Si es un objeto dinámico, se procede a activar su funcionalidad
-                        if(hit.collider.gameObject.TryGetComponent(out ObjetoDinamico objetoDinamico)){
-                            objetoDinamico.ActivarFuncionalidad();
-                            return;
-                        }
-
-                        // Si es un objeto dinámico, se procede a activar su funcionalidad
-                        if(hit.collider.gameObject.TryGetComponent(out ObjetoInterpolable objetoInterpolable)){
-                            objetoInterpolable.ActivarFuncionalidad();
-                            return;
-                        }
-
-                        // Si es un objeto dinámico, se procede a activar su funcionalidad
-                        if(hit.collider.gameObject.TryGetComponent(out ObjetoRotatorio objetoRotatorio)){
-                            objetoRotatorio.ActivarFuncionalidad();
-                            return;
-                        }
-
-                        if(hit.collider.TryGetComponent(out ObjetoInteractuable objetoInteractuable)){
-                            Vector3 screenMousePosFar = new Vector3(posicionRaton.x, posicionRaton.y, camaraPrincipal.farClipPlane);
-                            Vector3 screenMousePosNear = new Vector3(posicionRaton.x, posicionRaton.y, camaraPrincipal.nearClipPlane);
-                            Vector3 worldMousePosFar = camaraPrincipal.ScreenToWorldPoint(screenMousePosFar);
-                            Vector3 worldMousePosNear = camaraPrincipal.ScreenToWorldPoint(screenMousePosNear);
-
-                            // RaycastHit hit;
-                            // Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out hit);
-                            seleccionarObjetivo = hit.collider.transform;
-                            arrastrandoObjeto = true;
-                            objeto = objetoInteractuable.SeleccionarObjeto();
-                            alturaArratreObjeto = objetoInteractuable.AlturaAlzarceObjeto;
-                            Cursor.visible = false;
-                        }else{
-                            seleccionarObjetivo = null;
+                        // Si es un objeto, se procede a activar su funcionalidad
+                        if(hit.collider.TryGetComponent(out Objeto objeto)){
+                            objeto.ActivarFuncionalidad();
+                            if(objeto.ObtenerTipoObjeto()){
+                                this.objeto = objeto;
+                                Cursor.visible = false;
+                                arrastrandoObjeto = true;
+                                seleccionarObjetivo = hit.collider.transform;
+                            }
                         }
                     }
                 }
@@ -153,11 +120,26 @@ namespace Capacitacion {
 
             // Se valida si el usuario suelta el clic izquierdo del mouse
             if(Input.GetMouseButtonUp(0) && arrastrandoObjeto){
-                arrastrandoObjeto = false;
                 Cursor.visible = true;
-                objeto.ResetearFuncionalidad();
-                objeto = null;
+                arrastrandoObjeto = false;
                 seleccionarObjetivo = null;
+                objeto.ResetearFuncionalidad();
+                BorrarContenidoObjeto();
+            }
+
+            if(Input.GetMouseButtonDown(1)){
+                // Se efectua el evento del ray cast de la cámara
+                RaycastHit hit;
+                Vector3 posicionRaton = Input.mousePosition;
+                Ray ray = camaraPrincipal.ScreenPointToRay(posicionRaton);
+                if (Physics.Raycast(ray.origin, ray.direction, out hit, distanciaInteraccion, mascara, QueryTriggerInteraction.Collide)) {
+                    if(hit.collider != null){
+                        if(!hit.collider.TryGetComponent(out IActivarObjeto iaObjeto)){
+                            return;
+                        }
+                        iaObjeto.ActivarSegundaFuncionalidad();
+                    }
+                }
             }
         }
 
@@ -166,10 +148,14 @@ namespace Capacitacion {
             if(seleccionarObjetivo != null){
                 Vector3 position = new Vector3(Input.mousePosition.x, Input.mousePosition.y, camaraPrincipal.WorldToScreenPoint(seleccionarObjetivo.position).z);
                 Vector3 worldPosition = camaraPrincipal.ScreenToWorldPoint(position);
-                seleccionarObjetivo.position = new Vector3(worldPosition.x, alturaArratreObjeto, worldPosition.z);
-                if(Input.GetMouseButtonDown(1)){
-                    objeto.ActivarFuncionalidad();
-                }
+                seleccionarObjetivo.position = new Vector3(worldPosition.x, 1.25f, worldPosition.z);
+            }
+        }
+
+        private void BorrarContenidoObjeto(){
+            this.objeto = null;
+            if(cajaInformacion != null){
+                cajaInformacion.BorrarInformacion();
             }
         }
     }

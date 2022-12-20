@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Capacitacion {
 
@@ -24,14 +25,16 @@ namespace Capacitacion {
 
         [Header("Componentes del monitor")]
         [SerializeField] private Image imgZoomMicroscopio;
+        [SerializeField] private TMP_Text textoLenteObjetivo;
 
         private Light luzFoco;
         private Muestra muestra;
         private Animator animMonitorPc;
 
-        private float tiempoColoarMuestra = 1f;
         private bool estadoLuzFoco = false;
         private bool muestraColocada = false;
+        private float tiempoColoarMuestra = 1f;
+        private int lenteObjetivo = 0;
 
         private void Awake(){
             luzFoco = foco.GetComponentInChildren<Light>();            
@@ -48,7 +51,7 @@ namespace Capacitacion {
             animMonitorPc.SetBool("activate", estadoLuzFoco);
         }
 
-        public bool ColocarMuestra(Muestra muestra){
+        public bool ColocarPortaobjetos(Muestra muestra){
             if(!muestraColocada){
                 muestraColocada = true;
                 this.muestra = muestra;
@@ -65,8 +68,19 @@ namespace Capacitacion {
             }
         }
 
+        public void CambiarLenteObjetivo(int idLente, string resolucion){
+            lenteObjetivo = idLente;
+            textoLenteObjetivo.text = resolucion;
+            if(muestra != null) EstablecerVistaMonitor();
+        }
+
+        private void EstablecerVistaMonitor(){
+            imgZoomMicroscopio.sprite = lenteObjetivo >= 0 ? muestra.ListaImagenesMicroscopioZoom[lenteObjetivo]: null;
+        }
+
         private void RetirarMuestra(){
             muestra.transform.SetParent(null);
+            imgZoomMicroscopio.sprite = null;
             this.muestra = null;
         }
 
@@ -74,10 +88,9 @@ namespace Capacitacion {
             // Configurar muestra
             muestra.transform.SetParent(zonaMuestra.transform);
             yield return new WaitForSeconds(tiempoColoarMuestra);
-
             // Activar vista de muestra
+            EstablecerVistaMonitor();
         }
-
 
         public bool MuestraColocada { set => muestraColocada = value; get => muestraColocada; }
     }
