@@ -8,12 +8,14 @@ namespace Capacitacion {
         
         [SerializeField] private float anguloRotacion = 120f;
         [SerializeField] private float tiempoRotacion = 1f;
-        [SerializeField] private bool tieneLimiteRotacion = false;
-        [SerializeField] [Range(0, 180)] private int limiteMaxRotacion;
-        [SerializeField] [Range(-180, 0)] private int limiteMinRotacion;
+
+        public enum AxisRotacionGlobal { Up, Down, Left, Right, Forward }
+
+        [SerializeField] private AxisRotacionGlobal puntoRotacionGlobal;
 
         private Transform datosInicial;
         private bool rotando = false;
+        private Vector3 rotacionGlobal;
 
         // Si es verdad rota hacia la derecha, si es falso rota a la izquierda
         private bool ladoRotacion = false;
@@ -24,6 +26,7 @@ namespace Capacitacion {
         new protected virtual void Start() {
             base.Start();
             datosInicial = this.transform;
+            EstablecerRotacionGlobal();
         }
 
         private IEnumerator RotarObjeto(){
@@ -31,14 +34,27 @@ namespace Capacitacion {
             float tiempoTranscurrido = 0;
             while(tiempoTranscurrido <= tiempoRotacion){
                 this.transform.position = datosInicial.position;
-                this.transform.RotateAround(transform.position, transform.forward, (activarFuncionalidad ? anguloRotacion: -anguloRotacion) * Time.deltaTime);
+                this.transform.RotateAround(transform.position, rotacionGlobal, (activarFuncionalidad ? anguloRotacion: -anguloRotacion) * Time.deltaTime);
                 tiempoTranscurrido += Time.deltaTime;
-
                 yield return null;
             }
             // int rotationZ = (int) this.transform.eulerAngles.z;
             // this.transform.rotation = Quaternion.Euler(this.transform.eulerAngles.x, this.transform.eulerAngles.y, rotationZ);
             rotando = false;
+        }
+
+        private void EstablecerRotacionGlobal(){
+            if(puntoRotacionGlobal == AxisRotacionGlobal.Up){
+                rotacionGlobal = transform.up;
+            }else if(puntoRotacionGlobal == AxisRotacionGlobal.Down){
+                rotacionGlobal = -transform.up;
+            }else if(puntoRotacionGlobal == AxisRotacionGlobal.Left){
+                rotacionGlobal = -transform.right;
+            }else if(puntoRotacionGlobal == AxisRotacionGlobal.Right){
+                rotacionGlobal = transform.right;
+            }else{
+                rotacionGlobal = transform.forward;
+            }
         }
 
         public override void ActivarFuncionalidad() {
@@ -53,6 +69,7 @@ namespace Capacitacion {
 
         public override void ResetearFuncionalidad() {
             this.transform.position = datosInicial.position;
+            this.transform.rotation = datosInicial.rotation;
         }
 
         public override void EstablecerTipoObjeto() {
