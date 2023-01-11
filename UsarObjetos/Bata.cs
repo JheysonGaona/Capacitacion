@@ -48,5 +48,7 @@ namespace Capacitacion {
             }
             if(manosPersonaje != null) manosPersonaje.SetActive(!estadoAtuendo);
         }
+
+        public bool EstadoAtuendo { get => estadoAtuendo; }
     }
 }

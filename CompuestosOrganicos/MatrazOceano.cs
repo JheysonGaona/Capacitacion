@@ -9,7 +9,13 @@ namespace Capacitacion {
         
         // Variables de la clase
         [Tooltip("Animaciones que permiten que el color del agua se modifique")]
-        public Animator[] controladorAnimacionOceano;
+        [SerializeField] private Animator[] controladorAnimacionOceano;
+
+        [Tooltip("Animacion que permiten nublar el tuvo por donde circula la evaporacion del agua")]
+        [SerializeField] private Animator controladorAnimacionCircuito;
+
+        [Tooltip("Script de referencia al temporizador de la práctica")]
+        [SerializeField] private Temporizador temporizador;
 
         private float tiempoEvaporacion;
         private float tiempoColorAgua;
@@ -57,6 +63,7 @@ namespace Capacitacion {
             tiempoEvaporacion--;
             if (tiempoEvaporacion <= 0) {
                 CancelInvoke("TemporizadorFuego");
+                controladorAnimacionCircuito.SetBool("activar", true);
                 efectoVaporAgua.Play();
                 recursoSonido.Play();
                 activarEvaporacion = true;
@@ -72,6 +79,7 @@ namespace Capacitacion {
                 foreach(Animator current in controladorAnimacionOceano){
                     current.SetBool("cambiarColor", true);
                 }
+                temporizador.Iniciar = true;
                 // Enviar a P1 la práctica ha finalizado
             }
         }
@@ -81,6 +89,8 @@ namespace Capacitacion {
             tiempoEvaporacion = tiempoEvaporacionOriginal;
             tiempoColorAgua = tiempoColorAguaOriginal;
             if(activarEvaporacion){
+                controladorAnimacionCircuito.SetBool("activar", false);
+                temporizador.ReiniciarReloj();
                 efectoVaporAgua.Stop();
                 recursoSonido.Stop();
                 activarEvaporacion = false;

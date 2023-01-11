@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Capacitacion {
 
@@ -13,6 +14,7 @@ namespace Capacitacion {
         [SerializeField] private Button btnCerrarInstruccion;
 
         [SerializeField] private Sprite[] imagenesIntruccion;
+        [SerializeField] private string[] textosIntruccion;
 
         private int limite = 0;
         private int contador = 0;
